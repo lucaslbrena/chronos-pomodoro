@@ -7,25 +7,28 @@ import type { TaskModel } from "../../models/TaskModel";
 import { useTaskContext } from "../../contexts/TaskContexts/UseTaskContext";
 import { getNextCycle } from "../../utils/getNextCycle";
 import { getNextCycleType } from "../../utils/getNextCycleType";
-import { formatSecondsToMinutes } from "../../utils/formatSecondsToMinutes";
+import { TaskActionTypes } from "../../contexts/TaskContexts/TaskActions";
+import { Tips } from "../Tips";
+import { showMessage } from "../../adapters/showMessage";
 
 export function MainForm() {
-  const { state, setState } = useTaskContext();
+  const { state, dispatch } = useTaskContext();
   const taskNameInput = useRef<HTMLInputElement>(null);
 
   // ciclos
   const nextCycle = getNextCycle(state.currentCycle);
   const nextCycleType = getNextCycleType(nextCycle);
 
-  function handlerOnSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function handlerCreateNewTask(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    showMessage.dismiss();
 
     if (taskNameInput.current === null) return;
 
     const taskName = taskNameInput.current.value.trim();
 
     if (!taskName) {
-      alert("Digite uma tarefa");
+      showMessage.warn("Digite uma tarefa");
       return;
     }
 
@@ -39,22 +42,18 @@ export function MainForm() {
       type: nextCycleType,
     };
 
-    const secondsRemaining = newTask.duration * 60;
+    showMessage.sucess("Tarefa iniciada com sucesso");
+    dispatch({ type: TaskActionTypes.START_TASK, payload: newTask });
+  }
 
-    setState((prevState) => {
-      return {
-        ...prevState,
-        activeTask: newTask,
-        currentCycle: nextCycle,
-        secondsRemaining,
-        formattedSecondsRemaining: formatSecondsToMinutes(secondsRemaining),
-        tasks: [...prevState.tasks, newTask],
-      };
-    });
+  function handleInterruptTask() {
+    showMessage.dismiss();
+    showMessage.info("Tarefa interrompida!");
+    dispatch({ type: TaskActionTypes.INTERRUPT_TASK });
   }
 
   return (
-    <form className="input" onSubmit={handlerOnSubmit} action="">
+    <form className="input" onSubmit={handlerCreateNewTask} action="">
       <div className="formRow">
         <DefaultInput
           id="meuInput"
@@ -66,7 +65,7 @@ export function MainForm() {
         />
       </div>
       <div className="formRow">
-        <p>O proximo intervalo irá comecar em 25</p>
+        <Tips />
       </div>
 
       {/* isso e um if */}
@@ -77,20 +76,24 @@ export function MainForm() {
       )}
 
       <div className="formRow">
-        {!state.activeTask ? (
+        {!state.activeTask && (
           <DefaultButton
             aria-label="iniciar nova tarefa"
             title="iniciar nova tarefa"
             type="submit"
             icon={<PlayCircleIcon />}
+            key={"btn-submit"}
           />
-        ) : (
+        )}
+        {!!state.activeTask && (
           <DefaultButton
             aria-label="parar tarefa ativa"
             title="parar tarefa ativa"
             type="button"
             color="red"
             icon={<StopCircleIcon />}
+            onClick={handleInterruptTask}
+            key={"btn-interrupt"}
           />
         )}
       </div>

@@ -1,4 +1,4 @@
-import { useTaskContext } from "../../contexts/TaskContexts/UseTaskContext";
+import { useTaskContext } from "../../contexts/TaskContexts/useTaskContext";
 import { getNextCycle } from "../../utils/getNextCycle";
 import { getNextCycleType } from "../../utils/getNextCycleType";
 import styles from "./styles.module.css";

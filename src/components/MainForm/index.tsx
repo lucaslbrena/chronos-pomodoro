@@ -4,16 +4,17 @@ import { DefaultButton } from "../DefaultButton";
 import { DefaultInput } from "../DefaultInput";
 import { useRef } from "react";
 import type { TaskModel } from "../../models/TaskModel";
-import { useTaskContext } from "../../contexts/TaskContexts/UseTaskContext";
+import { useTaskContext } from "../../contexts/TaskContexts/useTaskContext";
 import { getNextCycle } from "../../utils/getNextCycle";
 import { getNextCycleType } from "../../utils/getNextCycleType";
-import { TaskActionTypes } from "../../contexts/TaskContexts/TaskActions";
+import { TaskActionTypes } from "../../contexts/TaskContexts/taskActions";
 import { Tips } from "../Tips";
 import { showMessage } from "../../adapters/showMessage";
 
 export function MainForm() {
   const { state, dispatch } = useTaskContext();
   const taskNameInput = useRef<HTMLInputElement>(null);
+  const lastTaskName = state.tasks[state.tasks.length - 1]?.name || "";
 
   // ciclos
   const nextCycle = getNextCycle(state.currentCycle);
@@ -42,7 +43,7 @@ export function MainForm() {
       type: nextCycleType,
     };
 
-    showMessage.sucess("Tarefa iniciada com sucesso");
+    showMessage.success("Tarefa iniciada com sucesso");
     dispatch({ type: TaskActionTypes.START_TASK, payload: newTask });
   }
 
@@ -62,6 +63,7 @@ export function MainForm() {
           placeholder="Digite algo"
           ref={taskNameInput}
           disabled={!!state.activeTask}
+          defaultValue={lastTaskName}
         />
       </div>
       <div className="formRow">

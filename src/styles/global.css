@@ -32,7 +32,3 @@ body {
     flex-direction: column;
     gap: 2.4rem;
 }
-
-.container-fluid {
-    max-width: auto;
-}

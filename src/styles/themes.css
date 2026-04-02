@@ -21,7 +21,9 @@
 */
 
 :root {
+   /* 🎭 Tons de Cinza (cores dinâmicas que mudam entre claro/escuro) */
    --gray-100: #e6e9f0;
+   /* Cinza mais claro (usado para fundos no modo escuro) */
    --gray-200: #cdd3e1;
    --gray-300: #aab3cc;
    --gray-400: #555f7d;
@@ -99,6 +101,7 @@
    --toastify-color-progress-dark: var(--primary);
 }
 
+/* 🌞 Modo Claro - Inverte algumas cores para manter o contraste */
 :root[data-theme='light'] {
    /* Tons de Cinza Invertidos */
    --gray-100: #0a0f1a;
@@ -112,6 +115,7 @@
    --gray-800: #cdd3e1;
    --gray-900: #e6e9f0;
    /* Fundo principal claro */
+
    /* 📝 Texto no modo claro */
    --text-default: #0a0f1a;
    /* Texto principal no modo claro */
